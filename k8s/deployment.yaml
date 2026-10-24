@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: code-review-agent}
+spec:
+  replicas: 3
+  selector: {matchLabels: {app: code-review-agent}}
+  template:
+    metadata: {labels: {app: code-review-agent}}
+    spec:
+      containers:
+      - name: api
+        image: code-review-agent:latest
+        ports: [{containerPort: 8000}]
+        env:
+        - name: MONGODB_URL
+          value: mongodb://mongo:27017
+---
+apiVersion: v1
+kind: Service
+metadata: {name: code-review-agent}
+spec:
+  selector: {app: code-review-agent}
+  ports: [{port: 80,targetPort: 8000}]
